@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Home OS | GitHub Edition</title>
+    <title>Home OS | Full Weekly View</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d35400; --secondary: #27ae60; --bg: #f4f7f6; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 10px; line-height: 1.3; padding-bottom: 100px; }
@@ -18,24 +18,31 @@
         select { padding: 6px; border-radius: 6px; border: 1px solid #ccc; width: 100%; font-size: 13px; margin-top: 5px; background: #fff; }
         .btn-main { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 8px; font-size: 15px; cursor: pointer; }
         .btn-sm { background: var(--primary); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
-        th, td { border: 1px solid #ddd; padding: 5px; text-align: left; vertical-align: top; }
-        th { background: #f8f9fa; color: var(--accent); }
+        
+        /* THE EXPANDED TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; vertical-align: top; }
+        th { background: #f8f9fa; color: var(--accent); font-weight: bold; text-transform: uppercase; font-size: 9px; }
+        .cell-content { display: flex; flex-direction: column; gap: 2px; }
+        .item-tag { color: #555; font-size: 9px; line-height: 1.1; border-bottom: 1px solid #eee; padding-bottom: 1px; }
+        .item-tag b { color: var(--primary); font-size: 10px; }
+
         .list-style { columns: 2; list-style: none; padding: 0; font-size: 12px; }
-        .list-style li { margin-bottom: 5px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .list-style li { margin-bottom: 5px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; break-inside: avoid; }
         .checkbox-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; }
         input[type="checkbox"] { width: 18px; height: 18px; margin-right: 10px; accent-color: var(--secondary); }
         .del-btn { color: #e53e3e; font-weight: bold; cursor: pointer; padding: 0 5px; font-size: 16px; }
+        
         @media print { .btn-main, select, .row-top button, #planner-card, #prep-card, .del-btn, .inventory-input { display: none !important; } }
     </style>
 </head>
 <body>
 
-    <h1>🏠 Home OS - Integrated (GitHub)</h1>
+    <h1>🏠 Home OS - Complete Weekly Plan</h1>
 
     <div class="card" id="prep-card" style="border-top-color: #e53e3e;">
         <h2>🔔 Action for Tonight</h2>
-        <div id="prep-summary" style="font-size: 13px; color: #c53030;">Shuffle to see requirements...</div>
+        <div id="prep-summary" style="font-size: 13px; color: #c53030;">Shuffle/select to see requirements...</div>
     </div>
 
     <div class="card" id="planner-card">
@@ -60,30 +67,32 @@
     </div>
 
     <div class="card" style="border-top-color: #3498db;">
-        <h2>📅 Weekly Calendar</h2>
-        <table id="weekly-table">
-            <thead><tr><th>Day</th><th>B-fast</th><th>Lunch</th><th>Dinner</th></tr></thead>
-            <tbody id="weekly-body"></tbody>
-        </table>
+        <h2>📅 Weekly Calendar (Full Thali View)</h2>
+        <div style="overflow-x: auto;">
+            <table id="weekly-table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Breakfast</th>
+                        <th>Lunch Details</th>
+                        <th>Dinner Details</th>
+                    </tr>
+                </thead>
+                <tbody id="weekly-body"></tbody>
+            </table>
+        </div>
         <button class="btn-main" style="background:#7f8c8d; font-size: 11px; padding: 8px; margin-top: 10px;" onclick="clearWeeklyOnly()">🗑️ Clear Weekly Plan Only</button>
     </div>
 
     <div class="card" style="border-top-color: #9f7aea;">
         <h2>🛒 Shopping | 🏡 Pantry</h2>
-        <h3 style="font-size:12px;">Weekly Grocery:</h3>
         <ul id="grocery-list" class="list-style"></ul>
         <hr>
-        <h3 style="font-size:12px;">Pantry Inventory (Persistent):</h3>
         <div style="display:flex; gap:5px; margin-bottom:10px;">
             <input type="text" id="inv-input" placeholder="Add..." style="flex-grow:1; padding:8px; border-radius:5px; border:1px solid #ccc;">
             <button onclick="addInventory()" style="background:var(--secondary); color:white; border:none; padding:8px; border-radius:5px;">Add</button>
         </div>
         <ul id="inventory-list" class="list-style"></ul>
-    </div>
-
-    <div class="card" style="border-top-color: var(--secondary);">
-        <h2>🧹 Active Sprints</h2>
-        <div style="font-size:13px;">• Empty Dishwasher | • 15m Fold | • Toy Reset</div>
     </div>
 
     <button class="btn-main" style="background:#34495e;" onclick="window.print()">🖨️ Export PDF</button>
@@ -92,34 +101,34 @@
 <script>
     const db = {
         breakfast: [
-            { name: "Poha", prep: "Wash 5m", buy: ["Poha", "Peanuts", "Onion"] },
-            { name: "Upma", prep: "Boil water", buy: ["Rava", "Carrot", "Peas"] },
-            { name: "Sevai Upma", prep: "Chop veggies", buy: ["Sevai"] },
-            { name: "Aloo Paratha", prep: "Boil pot. night", buy: ["Atta", "Potato"] },
-            { name: "Idli/Dosa", prep: "Ferment 12h", buy: ["Batter"] },
+            { name: "Poha", prep: "Wash 5m before", buy: ["Poha", "Peanuts", "Onion"] },
+            { name: "Upma", prep: "Boil water, add veggies", buy: ["Rava", "Carrot", "Peas"] },
+            { name: "Sevai Upma", prep: "Chop veggies", buy: ["Sevai", "Peas"] },
+            { name: "Aloo Paratha", prep: "Boil potatoes night before", buy: ["Atta", "Potato"] },
+            { name: "Idli/Dosa", prep: "Ferment 12h", buy: ["Urad Dal", "Rice Rava"] },
             { name: "Moong Chilla", prep: "Soak 8h", buy: ["Moong Dal"] },
             { name: "Batatyacha Kees", prep: "Grate night", buy: ["Potato", "Peanuts"] },
             { name: "Besan Chila", prep: "None", buy: ["Besan", "Tomato"] }
         ],
         veg: [
             { name: "Matki Usal", prep: "Sprout 24h", buy: ["Matki", "Goda Masala"] },
-            { name: "Chole", prep: "Soak 10h", buy: ["Chana", "Ginger", "Garlic"] },
+            { name: "Chole", prep: "Soak 10h", buy: ["Kabuli Chana", "Ginger", "Garlic"] },
             { name: "Rajma", prep: "Soak 10h", buy: ["Rajma", "Tomato"] },
             { name: "Bhendi", prep: "Wash 2h, dry/cut", buy: ["Bhendi", "Amchur"] },
             { name: "Bharli Vanga", prep: "Prep masala", buy: ["Eggplant", "Peanuts"] },
-            { name: "Lasooni Methi", prep: "Sort leaves", buy: ["Methi", "Garlic"] },
-            { name: "Cabbage", prep: "Cut veg", buy: ["Cabbage", "Peas"] },
-            { name: "Cauliflower", prep: "Cut veg", buy: ["Cauliflower", "Potato"] },
+            { name: "Lasooni Methi", prep: "Sort leaves 15m", buy: ["Methi", "Garlic"] },
+            { name: "Cabbage", prep: "Wash/cut", buy: ["Cabbage", "Peas"] },
+            { name: "Cauliflower", prep: "Wash/cut", buy: ["Cauliflower", "Potato"] },
             { name: "Guvar", prep: "String/cut", buy: ["Guvar", "Peanuts"] },
             { name: "Aloo Palak", prep: "Wash/cut", buy: ["Palak", "Potato"] },
             { name: "Dudhi", prep: "Wash/cut", buy: ["Dudhi", "Chana Dal"] },
-            { name: "Batata Kachrya", prep: "Cut thin", buy: ["Potato", "Jeera"] },
+            { name: "Batata Kachrya", prep: "Cut thin rounds", buy: ["Potato", "Jeera"] },
             { name: "Shimla Mirchi", prep: "Wash/cut", buy: ["Capsicum", "Besan"] },
             { name: "Valor Papdi", prep: "Wash/cut", buy: ["Valor Papdi"] },
             { name: "Dal Bhaji Palak", prep: "Prep masala", buy: ["Palak", "Toor Dal"] }
         ],
         dal: [
-            { name: "Dal Tadka", prep: "Pressure cook", buy: ["Toor Dal", "Tomato"] },
+            { name: "Dal Tadka", prep: "Pressure cook 25m", buy: ["Toor Dal", "Tomato"] },
             { name: "Sadha Varan", prep: "Plain cook", buy: ["Toor Dal"] },
             { name: "Chinch Gul Amti", prep: "Soak tamarind/jaggery", buy: ["Toor Dal", "Tamarind", "Jaggery"] },
             { name: "Kanda Khobra Amti", prep: "Roast onion/coconut", buy: ["Toor Dal", "Onion", "Coconut"] },
@@ -127,17 +136,17 @@
             { name: "Sadhi Fodni Varan", prep: "None", buy: ["Toor Dal", "Hing"] }
         ],
         salad: [
-            { name: "Gajar Koshimbir", prep: "Grate carrot", buy: ["Carrot"] },
+            { name: "Gajar Koshimbir", prep: "Grate carrot", buy: ["Carrot", "Lemon"] },
             { name: "Kakdi Koshimbir", prep: "Chop fine", buy: ["Cucumber", "Curd"] },
             { name: "Kanda Tomato", prep: "Chop fine", buy: ["Onion", "Tomato"] },
-            { name: "Beet Koshimbir", prep: "Grate beet", buy: ["Beetroot"] }
+            { name: "Beet Koshimbir", prep: "Grate beet", buy: ["Beetroot", "Curd"] }
         ],
         roti: [{ name: "Fulka", prep: "Knead dough", buy: ["Atta"] }, { name: "Paratha", prep: "Knead dough", buy: ["Atta", "Ghee"] }],
         rice: [{ name: "Bhaat", prep: "Wash 2x", buy: ["Rice"] }, { name: "Jeera Rice", prep: "Soak 15m", buy: ["Basmati", "Jeera"] }]
     };
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    let selections = { b: {}, l: {veg:{}, dal:{}, sal:{}, rot:{}, ric:{}}, d: {veg:{}, dal:{}, sal:{}, rot:{}, ric:{}} };
+    let selections = { b: {}, l: {veg:{}, dal:{}, salad:{}, roti:{}, rice:{}}, d: {veg:{}, dal:{}, salad:{}, roti:{}, rice:{}} };
     let weekly = JSON.parse(localStorage.getItem('weeklyPlan')) || [];
     let pantry = JSON.parse(localStorage.getItem('pantryItems')) || [];
 
@@ -201,10 +210,26 @@
         const tbody = document.getElementById('weekly-body');
         tbody.innerHTML = weekly.map((e, idx) => `
             <tr>
-                <td>${days[idx % 7]}</td>
+                <td><b>${days[idx % 7]}</b></td>
                 <td>${e.b.name}</td>
-                <td>${e.l.veg.name}, ${e.l.dal.name}</td>
-                <td>${e.d.veg.name}, ${e.d.dal.name}</td>
+                <td>
+                    <div class="cell-content">
+                        <span class="item-tag">V: <b>${e.l.veg.name}</b></span>
+                        <span class="item-tag">D: <b>${e.l.dal.name}</b></span>
+                        <span class="item-tag">S: <b>${e.l.salad.name}</b></span>
+                        <span class="item-tag">R: <b>${e.l.roti.name}</b></span>
+                        <span class="item-tag">Ri:<b>${e.l.rice.name}</b></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="cell-content">
+                        <span class="item-tag">V: <b>${e.d.veg.name}</b></span>
+                        <span class="item-tag">D: <b>${e.d.dal.name}</b></span>
+                        <span class="item-tag">S: <b>${e.d.salad.name}</b></span>
+                        <span class="item-tag">R: <b>${e.d.roti.name}</b></span>
+                        <span class="item-tag">Ri:<b>${e.d.rice.name}</b></span>
+                    </div>
+                </td>
             </tr>`).join('');
         
         let need = new Set();
@@ -216,11 +241,7 @@
     }
 
     function clearWeeklyOnly() {
-        if(confirm("Clear current weekly plan? (Pantry stays safe)")) {
-            weekly = [];
-            localStorage.setItem('weeklyPlan', JSON.stringify(weekly));
-            renderWeekly();
-        }
+        if(confirm("Clear plan?")) { weekly = []; localStorage.setItem('weeklyPlan', JSON.stringify(weekly)); renderWeekly(); }
     }
 
     function addInventory() {
