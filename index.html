@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Home OS | Pro Integrated</title>
+    <title>Home OS | Final Pro</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d35400; --secondary: #27ae60; --bg: #f4f7f6; --toddler: #805ad5; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 0; line-height: 1.3; }
@@ -24,26 +24,22 @@
         .section-label { background: #34495e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 10px; display: inline-block; }
         .t-label { background: var(--toddler); }
 
-        /* Meals */
         .meal-row { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
         .row-top { display: flex; justify-content: space-between; align-items: center; }
         .meal-label { font-weight: bold; width: 85px; font-size: 11px; color: #7f8c8d; text-transform: uppercase; }
         .meal-selection { flex-grow: 1; font-size: 14px; font-weight: 600; }
         
-        /* Tables */
         table { width: 100%; border-collapse: collapse; font-size: 10px; background: white; }
         th, td { border: 1px solid #ddd; padding: 5px; text-align: left; vertical-align: top; }
         th { background: #f8f9fa; color: var(--accent); }
 
-        /* Forms & Buttons */
         .btn-main { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 10px; font-size: 15px; cursor: pointer; }
         .btn-sm { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; }
         .checkbox-group { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; }
         input[type="checkbox"] { width: 18px; height: 18px; margin-right: 10px; accent-color: var(--secondary); }
         
         .list-style { columns: 2; list-style: none; padding: 0; font-size: 13px; }
-        .del-btn { color: #e53e3e; font-weight: bold; cursor: pointer; padding: 0 5px; }
-        .reminder-input { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ddd; margin-bottom: 5px; font-size: 13px; }
+        .del-btn { color: #e53e3e; font-weight: bold; cursor: pointer; padding: 0 5px; font-size: 18px; }
 
         @media print { .tab-bar, .btn-main, select, .row-top button { display: none !important; } .window { display: block !important; } }
     </style>
@@ -54,14 +50,14 @@
 
     <div id="win-home" class="window active">
         <div class="card" id="prep-card" style="border-top-color: #e53e3e;">
-            <h2>🔔 Tonight's Action (Full House)</h2>
+            <h2>🔔 Tonight's Prep Tracker</h2>
             <div id="prep-summary" style="font-size: 13px; color: #c53030;">Select meals to see prep needs...</div>
         </div>
 
         <div class="card">
-            <h2>🍴 Adult Meal Plan</h2>
+            <h2>🍴 Adult Meal Orchestrator</h2>
             <div id="planner-container"></div>
-            <button class="btn-main" onclick="shuffleFullDay()">🔀 Shuffle Day</button>
+            <button class="btn-main" onclick="shuffleFullDay()">🔀 Shuffle Adult Day</button>
             <button class="btn-main" style="background:#27ae60;" onclick="saveToWeekly('adult')">💾 Lock Weekly Plan</button>
         </div>
 
@@ -73,33 +69,26 @@
 
     <div id="win-toddler" class="window">
         <div class="card" style="border-top-color: var(--secondary);">
-            <h2>🏫 School Reminders & Bag Check</h2>
-            <div class="checkbox-group"><input type="checkbox"> Water Bottle Filled</div>
-            <div class="checkbox-group"><input type="checkbox"> Extra Clothes/Pull-up</div>
-            <div class="checkbox-group"><input type="checkbox"> Library Book (If Wed)</div>
-            <div class="checkbox-group"><input type="checkbox"> Sun Hat / Jacket</div>
-            <hr>
-            <input type="text" id="rem-input" class="reminder-input" placeholder="Add custom reminder (e.g. Show & Tell)...">
-            <button class="btn-sm" onclick="addReminder()" style="width:100%">Add Special Reminder</button>
-            <ul id="reminder-list" style="margin-top:10px; font-size:13px; padding-left:20px;"></ul>
+            <h2>🏫 School Reminders</h2>
+            <div class="checkbox-group"><input type="checkbox"> Water Bottle | <input type="checkbox"> Extra Clothes</div>
         </div>
 
         <div class="card" style="border-top-color: var(--toddler);">
-            <h2>👶 Toddler Meal Plan</h2>
+            <h2>👶 Toddler Meal Orchestrator</h2>
             <div id="toddler-planner-container"></div>
-            <button class="btn-main" style="background:var(--toddler);" onclick="shuffleToddlerDay()">🔀 Shuffle Toddler Menu</button>
+            <button class="btn-main" style="background:var(--toddler);" onclick="shuffleToddlerDay()">🔀 Shuffle Toddler Day</button>
             <button class="btn-main" style="background:#27ae60;" onclick="saveToWeekly('toddler')">💾 Lock Toddler Week</button>
         </div>
 
         <div class="card" style="border-top-color: #3498db;">
             <h2>📅 Toddler Weekly Calendar</h2>
-            <div style="overflow-x: auto;"><table id="toddler-weekly-table"><thead><tr><th>Day</th><th>Snack/Tiffin</th><th>Veg/Dal</th></tr></thead><tbody id="toddler-weekly-body"></tbody></table></div>
+            <div style="overflow-x: auto;"><table id="toddler-weekly-table"><thead><tr><th>Day</th><th>School Sprint</th><th>L/D Veg</th></tr></thead><tbody id="toddler-weekly-body"></tbody></table></div>
         </div>
     </div>
 
     <div id="win-admin" class="window">
         <div class="card" style="border-top-color: #9f7aea;">
-            <h2>🛒 Shopping | 🏡 Pantry</h2>
+            <h2>🛒 Grocery | 🏡 Pantry</h2>
             <ul id="grocery-list" class="list-style"></ul>
             <hr>
             <div style="display:flex; gap:5px; margin-bottom:10px;">
@@ -109,11 +98,9 @@
             <ul id="inventory-list" class="list-style"></ul>
         </div>
         
-        <div class="card" style="border-top-color: var(--secondary);">
-            <h2>🧹 Sunday Batch Prep</h2>
-            <div class="checkbox-group"><input type="checkbox"> Bhuna Masala Base</div>
-            <div class="checkbox-group"><input type="checkbox"> Roast Rava/Sevai</div>
-            <div class="checkbox-group"><input type="checkbox"> Toddler Paratha Doughs</div>
+        <div class="card" style="border-top-color: #ed8936;">
+            <h2>🗓️ Sunday Batch Prep</h2>
+            <div class="checkbox-group"><input type="checkbox"> Bhuna Masala Base | <input type="checkbox"> Roast Rava</div>
         </div>
         <button class="btn-main" style="background:#34495e;" onclick="window.print()">🖨️ Export PDF</button>
     </div>
@@ -131,7 +118,6 @@
     </nav>
 
 <script>
-    // COMPREHENSIVE DATABASE
     const db = {
         breakfast: [
             { name: "Poha", prep: "Wash 5m", buy: ["Poha", "Peanuts"] },
@@ -144,12 +130,12 @@
             { name: "Besan Chila", prep: "None", buy: ["Besan"] }
         ],
         veg: [
-            { name: "Matki Usal", prep: "Sprout 24h", buy: ["Matki", "Goda Masala"] },
-            { name: "Chole", prep: "Soak 10h", buy: ["Kabuli Chana", "Ginger", "Garlic"] },
-            { name: "Rajma", prep: "Soak 10h", buy: ["Rajma", "Tomato"] },
-            { name: "Bhendi", prep: "Wash 2h, dry/cut", buy: ["Bhendi", "Amchur"] },
+            { name: "Matki Usal", prep: "Sprout 24h", buy: ["Matki"] },
+            { name: "Chole", prep: "Soak 10h", buy: ["Chana"] },
+            { name: "Rajma", prep: "Soak 10h", buy: ["Rajma"] },
+            { name: "Bhendi", prep: "Wash 2h, dry/cut", buy: ["Bhendi"] },
             { name: "Bharli Vanga", prep: "Prep masala", buy: ["Eggplant", "Peanuts"] },
-            { name: "Lasooni Methi", prep: "Sort leaves 15m", buy: ["Methi", "Garlic"] },
+            { name: "Lasooni Methi", prep: "Sort leaves", buy: ["Methi", "Garlic"] },
             { name: "Cabbage", prep: "Wash and cut", buy: ["Cabbage", "Peas"] },
             { name: "Cauliflower", prep: "Wash and cut", buy: ["Cauliflower", "Potato"] },
             { name: "Guvar", prep: "String/cut", buy: ["Guvar", "Peanuts"] },
@@ -158,38 +144,35 @@
             { name: "Batata Kachrya", prep: "Cut thin rounds", buy: ["Potato", "Jeera"] },
             { name: "Shimla Mirchi", prep: "Wash/cut", buy: ["Capsicum", "Besan"] },
             { name: "Valor Papdi", prep: "Wash/cut", buy: ["Valor Papdi"] },
-            { name: "Dal Bhaji Palak", prep: "Prep masala 30m", buy: ["Palak", "Toor Dal"] }
+            { name: "Dal Bhaji Palak", prep: "Prep masala", buy: ["Palak", "Toor Dal"] },
+            { name: "None/Adults", prep: "", buy: [] }
         ],
         dal: [
-            { name: "Dal Tadka", prep: "Pressure cook 25m", buy: ["Toor Dal", "Tomato"] },
+            { name: "Dal Tadka", prep: "Pressure cook", buy: ["Toor Dal"] },
             { name: "Sadha Varan", prep: "Plain cook", buy: ["Toor Dal"] },
             { name: "Chinch Gul Amti", prep: "Soak tamarind/jaggery", buy: ["Toor Dal", "Tamarind", "Jaggery"] },
-            { name: "Kanda Khobra Amti", prep: "Roast onion/coconut", buy: ["Toor Dal", "Onion", "Coconut"] },
+            { name: "Kanda Khobra Amti", prep: "Roast onion", buy: ["Toor Dal", "Coconut"] },
             { name: "Kothimbir Varan", prep: "Grind green masala", buy: ["Toor Dal", "Coriander"] },
-            { name: "Sadhi Fodni Varan", prep: "None", buy: ["Toor Dal", "Hing"] }
+            { name: "Sadhi Fodni Varan", prep: "None", buy: ["Toor Dal"] },
+            { name: "None/Adults", prep: "", buy: [] }
         ],
-        snack: [
-            { name: "Makhana", prep: "Roast with ghee", buy: ["Makhana"] },
-            { name: "Goldfish", prep: "None", buy: ["Goldfish"] },
-            { name: "Parmesan Crisps", prep: "Bake 5m", buy: ["Parmesan"] },
-            { name: "Veggie Straws", prep: "None", buy: ["Veggie Straws"] },
-            { name: "Pizza Balls", prep: "Bake night", buy: ["Dough", "Sauce"] }
+        salad: [
+            { name: "Gajar Koshimbir", prep: "Grate carrot", buy: ["Carrot"] },
+            { name: "Kakdi Koshimbir", prep: "Chop fine", buy: ["Cucumber", "Curd"] },
+            { name: "Kanda Tomato", prep: "Chop fine", buy: ["Onion", "Tomato"] },
+            { name: "Beet Koshimbir", prep: "Grate beet", buy: ["Beetroot"] }
         ],
-        tiffin: [
-            { name: "Aloo Paratha", prep: "Stuff/Roast", buy: ["Potato", "Atta"] },
-            { name: "Paneer Paratha", prep: "Stuff/Roast", buy: ["Paneer", "Atta"] },
-            { name: "Puri", prep: "Fry fresh AM", buy: ["Atta", "Oil"] },
-            { name: "Methi Paratha", prep: "Knead dough", buy: ["Methi", "Atta"] },
-            { name: "Carrot Paratha", prep: "Grate carrot in", buy: ["Carrot", "Atta"] }
-        ]
+        roti: [{ name: "Fulka", prep: "Knead dough", buy: ["Atta"] }, { name: "Paratha", prep: "Knead dough", buy: ["Atta"] }],
+        rice: [{ name: "Bhaat", prep: "Wash 2x", buy: ["Rice"] }, { name: "Jeera Rice", prep: "Soak 15m", buy: ["Basmati"] }],
+        snack: [{ name: "Makhana", prep: "Roast", buy: ["Makhana"] }, { name: "Goldfish", prep: "None", buy: ["Goldfish"] }, { name: "Parmesan Crisps", prep: "Bake", buy: ["Parmesan"] }, { name: "Veggie Straws", prep: "None", buy: ["Straws"] }, { name: "Pizza Balls", prep: "Bake", buy: ["Dough"] }],
+        tiffin: [{ name: "Aloo Paratha", prep: "Stuff", buy: ["Potato", "Atta"] }, { name: "Paneer Paratha", prep: "Stuff", buy: ["Paneer", "Atta"] }, { name: "Puri", prep: "Fry", buy: ["Atta"] }, { name: "Methi Paratha", prep: "Knead", buy: ["Methi"] }, { name: "Carrot Paratha", prep: "Grate", buy: ["Carrot"] }]
     };
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    let selections = { adult: {b:{}, l:{veg:{}, dal:{}}, d:{veg:{}, dal:{}}}, toddler: {b:{}, snk:{}, tif:{}, l:{veg:{}, dal:{}}, d:{veg:{}, dal:{}}} };
-    let weeklyAdult = JSON.parse(localStorage.getItem('weeklyAdult')) || [];
-    let weeklyToddler = JSON.parse(localStorage.getItem('weeklyToddler')) || [];
+    let selections = { adult: {b:{}, l:{v:{}, d:{}, s:{}, rot:{}, ric:{}}, d:{v:{}, d:{}, s:{}, rot:{}, ric:{}}}, toddler: {b:{}, snk:{}, tif:{}, l:{v:{}, d:{}}, d:{v:{}, d:{}}} };
+    let weeklyAdult = JSON.parse(localStorage.getItem('w_adl')) || [];
+    let weeklyToddler = JSON.parse(localStorage.getItem('w_tod')) || [];
     let pantry = JSON.parse(localStorage.getItem('pantryItems')) || [];
-    let toddlerReminders = JSON.parse(localStorage.getItem('toddlerRem')) || [];
 
     function showWindow(id, btn) {
         document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
@@ -200,26 +183,26 @@
 
     function init() {
         const adl = document.getElementById('planner-container');
-        adl.innerHTML = `<span class="section-label">Breakfast</span>` + renderRow('adult', 'b', 'breakfast') +
-                        `<span class="section-label">Lunch Thali</span>` + renderRow('adult', 'l', 'veg') + renderRow('adult', 'l', 'dal') +
-                        `<span class="section-label">Dinner Thali</span>` + renderRow('adult', 'd', 'veg') + renderRow('adult', 'd', 'dal');
+        adl.innerHTML = `<span class="section-label">Breakfast</span>` + renderRow('adult','b','breakfast') +
+                        `<span class="section-label">Lunch</span>` + renderRow('adult','l_v','veg') + renderRow('adult','l_d','dal') + renderRow('adult','l_s','salad') + renderRow('adult','l_rot','roti') + renderRow('adult','l_ric','rice') +
+                        `<span class="section-label">Dinner</span>` + renderRow('adult','d_v','veg') + renderRow('adult','d_d','dal') + renderRow('adult','d_s','salad') + renderRow('adult','d_rot','roti') + renderRow('adult','d_ric','rice');
         
         const tod = document.getElementById('toddler-planner-container');
-        tod.innerHTML = `<span class="section-label t-label">Toddler Breakfast</span>` + renderRow('toddler', 'b', 'breakfast') +
-                        `<span class="section-label t-label">School Sprint</span>` + renderRow('toddler', 'snk', 'snack') + renderRow('toddler', 'tif', 'tiffin') +
-                        `<span class="section-label t-label">Toddler Lunch / Dinner</span>` + renderRow('toddler', 'l', 'veg') + renderRow('toddler', 'l', 'dal');
+        tod.innerHTML = `<span class="section-label t-label">Toddler Breakfast</span>` + renderRow('toddler','b','breakfast') +
+                        `<span class="section-label t-label">School Sprint</span>` + renderRow('toddler','snk','snack') + renderRow('toddler','tif','tiffin') +
+                        `<span class="section-label t-label">Toddler Lunch / Dinner (Optional)</span>` + renderRow('toddler','l_v','veg') + renderRow('toddler','l_d','dal') + renderRow('toddler','d_v','veg') + renderRow('toddler','d_d','dal');
 
-        renderWeekly('adult'); renderWeekly('toddler'); renderInventory(); renderReminders();
+        renderWeekly('adult'); renderWeekly('toddler'); renderInventory();
     }
 
     function renderRow(mK, subK, dbK) {
-        return `<div class="meal-row"><div class="row-top"><div class="meal-label">${dbK}:</div><div class="meal-selection" id="disp-${mK}-${subK}-${dbK}">---</div><button class="btn-sm" onclick="shuffleItem('${mK}','${subK}','${dbK}')">🎲</button></div></div>`;
+        return `<div class="meal-row"><div class="row-top"><div class="meal-label">${dbK}:</div><div class="meal-selection" id="disp-${mK}-${subK}">---</div><button class="btn-sm" onclick="shuffleItem('${mK}','${subK}','${dbK}')">🎲</button></div></div>`;
     }
 
     function shuffleItem(mK, subK, dbK) {
         const item = db[dbK][Math.floor(Math.random()*db[dbK].length)];
         selections[mK][subK] = item;
-        document.getElementById(`disp-${mK}-${subK}-${dbK}`).innerText = item.name;
+        document.getElementById(`disp-${mK}-${subK}`).innerText = item.name;
         updatePrep();
     }
 
@@ -231,24 +214,12 @@
         document.getElementById('prep-summary').innerHTML = p;
     }
 
-    function addReminder() {
-        const val = document.getElementById('rem-input').value;
-        if(val) { toddlerReminders.push(val); localStorage.setItem('toddlerRem', JSON.stringify(toddlerReminders)); renderReminders(); }
-        document.getElementById('rem-input').value = "";
-    }
-
-    function renderReminders() {
-        document.getElementById('reminder-list').innerHTML = toddlerReminders.map((r, idx) => `<li>${r} <span class="del-btn" onclick="removeRem(${idx})">×</span></li>`).join('');
-    }
-
-    function removeRem(idx) { toddlerReminders.splice(idx, 1); localStorage.setItem('toddlerRem', JSON.stringify(toddlerReminders)); renderReminders(); }
-
-    function shuffleToddlerDay() { ['b','snk','tif','l','d'].forEach(k => shuffleItem('toddler', k, k === 'snk' ? 'snack' : k === 'tif' ? 'tiffin' : k === 'l' ? 'veg' : k === 'd' ? 'dal' : 'breakfast')); }
-    function shuffleFullDay() { ['b','l','d'].forEach(k => shuffleItem('adult', k, k === 'b' ? 'breakfast' : k === 'l' ? 'veg' : 'dal')); }
+    function shuffleToddlerDay() { ['b','snk','tif','l_v','l_d','d_v','d_d'].forEach(k => shuffleItem('toddler', k, k === 'snk' ? 'snack' : k === 'tif' ? 'tiffin' : k.includes('_v') ? 'veg' : k.includes('_d') ? 'dal' : 'breakfast')); }
+    function shuffleFullDay() { ['b','l_v','l_d','l_s','l_rot','l_ric','d_v','d_d','d_s','d_rot','d_ric'].forEach(k => shuffleItem('adult', k, k.includes('_v') ? 'veg' : k.includes('_d') ? 'dal' : k.includes('_s') ? 'salad' : k.includes('_rot') ? 'roti' : k.includes('_ric') ? 'rice' : 'breakfast')); }
 
     function saveToWeekly(mK) {
-        if(mK === 'adult') { weeklyAdult.push(JSON.parse(JSON.stringify(selections.adult))); localStorage.setItem('weeklyAdult', JSON.stringify(weeklyAdult)); }
-        else { weeklyToddler.push(JSON.parse(JSON.stringify(selections.toddler))); localStorage.setItem('weeklyToddler', JSON.stringify(weeklyToddler)); }
+        if(mK === 'adult') { weeklyAdult.push(JSON.parse(JSON.stringify(selections.adult))); localStorage.setItem('w_adl', JSON.stringify(weeklyAdult)); }
+        else { weeklyToddler.push(JSON.parse(JSON.stringify(selections.toddler))); localStorage.setItem('w_tod', JSON.stringify(weeklyToddler)); }
         renderWeekly(mK);
     }
 
@@ -256,17 +227,9 @@
         const tbody = document.getElementById(mK === 'adult' ? 'weekly-body' : 'toddler-weekly-body');
         const data = mK === 'adult' ? weeklyAdult : weeklyToddler;
         tbody.innerHTML = data.map((e, idx) => mK === 'adult' ? 
-            `<tr><td>${days[idx%7]}</td><td>${e.b.name}</td><td>${e.l.name}</td><td>${e.d.name}</td></tr>` :
-            `<tr><td>${days[idx%7]}</td><td>${e.snk.name}<br>${e.tif.name}</td><td>${e.l.name}</td></tr>`
+            `<tr><td>${days[idx%7]}</td><td>${e.b?.name||''}</td><td>${e.l_v?.name||''} / ${e.l_d?.name||''}</td><td>${e.d_v?.name||''} / ${e.d_d?.name||''}</td></tr>` :
+            `<tr><td>${days[idx%7]}</td><td>${e.snk?.name||''}<br>${e.tif?.name||''}</td><td>${e.l_v?.name||''} / ${e.l_d?.name||''}</td></tr>`
         ).join('');
-        updateGrocery();
-    }
-
-    function updateGrocery() {
-        let need = new Set();
-        weeklyAdult.forEach(e => { e.b.buy?.forEach(i => need.add(i)); e.l.buy?.forEach(i => need.add(i)); });
-        weeklyToddler.forEach(e => { e.snk.buy?.forEach(i => need.add(i)); e.tif.buy?.forEach(i => need.add(i)); });
-        document.getElementById('grocery-list').innerHTML = Array.from(need).map(i => `<li>☐ ${i}</li>`).join('');
     }
 
     function addInventory() {
