@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Home OS | GitHub Edition</title>
+    <style>
+        :root { --primary: #2c3e50; --accent: #d35400; --secondary: #27ae60; --bg: #f4f7f6; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 10px; line-height: 1.3; padding-bottom: 100px; }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border-top: 4px solid var(--accent); }
+        h1 { text-align: center; font-size: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        h2 { font-size: 15px; margin: 0 0 8px 0; color: var(--accent); display: flex; justify-content: space-between; align-items: center; }
+        .section-label { background: #34495e; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; margin-top: 10px; display: inline-block; }
+        .meal-row { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .row-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .meal-label { font-weight: bold; width: 80px; font-size: 11px; color: #7f8c8d; text-transform: uppercase; }
+        .meal-selection { flex-grow: 1; font-size: 14px; font-weight: 600; color: #2d3436; }
+        select { padding: 6px; border-radius: 6px; border: 1px solid #ccc; width: 100%; font-size: 13px; margin-top: 5px; background: #fff; }
+        .btn-main { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 8px; font-size: 15px; cursor: pointer; }
+        .btn-sm { background: var(--primary); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
+        th, td { border: 1px solid #ddd; padding: 5px; text-align: left; vertical-align: top; }
+        th { background: #f8f9fa; color: var(--accent); }
+        .list-style { columns: 2; list-style: none; padding: 0; font-size: 12px; }
+        .list-style li { margin-bottom: 5px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .checkbox-group { display: flex; align-items: center; margin-bottom: 10px; font-size: 13px; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 10px; accent-color: var(--secondary); }
+        .del-btn { color: #e53e3e; font-weight: bold; cursor: pointer; padding: 0 5px; font-size: 16px; }
+        @media print { .btn-main, select, .row-top button, #planner-card, #prep-card, .del-btn, .inventory-input { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <h1>🏠 Home OS - Integrated (GitHub)</h1>
+
+    <div class="card" id="prep-card" style="border-top-color: #e53e3e;">
+        <h2>🔔 Action for Tonight</h2>
+        <div id="prep-summary" style="font-size: 13px; color: #c53030;">Shuffle to see requirements...</div>
+    </div>
+
+    <div class="card" id="planner-card">
+        <h2>🍴 Meal Orchestrator</h2>
+        <span class="section-label">BREAKFAST</span>
+        <div id="b-container"></div>
+        <span class="section-label">LUNCH</span>
+        <div id="l-container"></div>
+        <span class="section-label">DINNER</span>
+        <div id="d-container"></div>
+        <button class="btn-main" onclick="shuffleFullDay()">🔀 Shuffle Full Day</button>
+        <button class="btn-main" style="background:#27ae60;" onclick="saveToWeekly()">💾 Lock into Weekly Plan</button>
+    </div>
+
+    <div class="card" style="border-top-color: #ed8936;">
+        <h2>🗓️ Sunday Batch-Prep Checklist</h2>
+        <div class="checkbox-group"><input type="checkbox"> Bhuna Masala: Onion-Tomato Base</div>
+        <div class="checkbox-group"><input type="checkbox"> Roast Rava & Sevai</div>
+        <div class="checkbox-group"><input type="checkbox"> Boil/Portion Chickpeas & Rajma</div>
+        <div class="checkbox-group"><input type="checkbox"> Veg Cut: Bhendi (Dry), Methi, Guvar</div>
+        <div class="checkbox-group"><input type="checkbox"> Refill Masala Dabba</div>
+    </div>
+
+    <div class="card" style="border-top-color: #3498db;">
+        <h2>📅 Weekly Calendar</h2>
+        <table id="weekly-table">
+            <thead><tr><th>Day</th><th>B-fast</th><th>Lunch</th><th>Dinner</th></tr></thead>
+            <tbody id="weekly-body"></tbody>
+        </table>
+        <button class="btn-main" style="background:#7f8c8d; font-size: 11px; padding: 8px; margin-top: 10px;" onclick="clearWeeklyOnly()">🗑️ Clear Weekly Plan Only</button>
+    </div>
+
+    <div class="card" style="border-top-color: #9f7aea;">
+        <h2>🛒 Shopping | 🏡 Pantry</h2>
+        <h3 style="font-size:12px;">Weekly Grocery:</h3>
+        <ul id="grocery-list" class="list-style"></ul>
+        <hr>
+        <h3 style="font-size:12px;">Pantry Inventory (Persistent):</h3>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <input type="text" id="inv-input" placeholder="Add..." style="flex-grow:1; padding:8px; border-radius:5px; border:1px solid #ccc;">
+            <button onclick="addInventory()" style="background:var(--secondary); color:white; border:none; padding:8px; border-radius:5px;">Add</button>
+        </div>
+        <ul id="inventory-list" class="list-style"></ul>
+    </div>
+
+    <div class="card" style="border-top-color: var(--secondary);">
+        <h2>🧹 Active Sprints</h2>
+        <div style="font-size:13px;">• Empty Dishwasher | • 15m Fold | • Toy Reset</div>
+    </div>
+
+    <button class="btn-main" style="background:#34495e;" onclick="window.print()">🖨️ Export PDF</button>
+    <button onclick="resetApp()" style="width:100%; background:none; border:none; color:gray; margin-top:15px; font-size:11px;">⚠️ Factory Reset All Data</button>
+
+<script>
+    const db = {
+        breakfast: [
+            { name: "Poha", prep: "Wash 5m", buy: ["Poha", "Peanuts", "Onion"] },
+            { name: "Upma", prep: "Boil water", buy: ["Rava", "Carrot", "Peas"] },
+            { name: "Sevai Upma", prep: "Chop veggies", buy: ["Sevai"] },
+            { name: "Aloo Paratha", prep: "Boil pot. night", buy: ["Atta", "Potato"] },
+            { name: "Idli/Dosa", prep: "Ferment 12h", buy: ["Batter"] },
+            { name: "Moong Chilla", prep: "Soak 8h", buy: ["Moong Dal"] },
+            { name: "Batatyacha Kees", prep: "Grate night", buy: ["Potato", "Peanuts"] },
+            { name: "Besan Chila", prep: "None", buy: ["Besan", "Tomato"] }
+        ],
+        veg: [
+            { name: "Matki Usal", prep: "Sprout 24h", buy: ["Matki", "Goda Masala"] },
+            { name: "Chole", prep: "Soak 10h", buy: ["Chana", "Ginger", "Garlic"] },
+            { name: "Rajma", prep: "Soak 10h", buy: ["Rajma", "Tomato"] },
+            { name: "Bhendi", prep: "Wash 2h, dry/cut", buy: ["Bhendi", "Amchur"] },
+            { name: "Bharli Vanga", prep: "Prep masala", buy: ["Eggplant", "Peanuts"] },
+            { name: "Lasooni Methi", prep: "Sort leaves", buy: ["Methi", "Garlic"] },
+            { name: "Cabbage", prep: "Cut veg", buy: ["Cabbage", "Peas"] },
+            { name: "Cauliflower", prep: "Cut veg", buy: ["Cauliflower", "Potato"] },
+            { name: "Guvar", prep: "String/cut", buy: ["Guvar", "Peanuts"] },
+            { name: "Aloo Palak", prep: "Wash/cut", buy: ["Palak", "Potato"] },
+            { name: "Dudhi", prep: "Wash/cut", buy: ["Dudhi", "Chana Dal"] },
+            { name: "Batata Kachrya", prep: "Cut thin", buy: ["Potato", "Jeera"] },
+            { name: "Shimla Mirchi", prep: "Wash/cut", buy: ["Capsicum", "Besan"] },
+            { name: "Valor Papdi", prep: "Wash/cut", buy: ["Valor Papdi"] },
+            { name: "Dal Bhaji Palak", prep: "Prep masala", buy: ["Palak", "Toor Dal"] }
+        ],
+        dal: [
+            { name: "Dal Tadka", prep: "Pressure cook", buy: ["Toor Dal", "Tomato"] },
+            { name: "Sadha Varan", prep: "Plain cook", buy: ["Toor Dal"] },
+            { name: "Chinch Gul Amti", prep: "Soak tamarind/jaggery", buy: ["Toor Dal", "Tamarind", "Jaggery"] },
+            { name: "Kanda Khobra Amti", prep: "Roast onion/coconut", buy: ["Toor Dal", "Onion", "Coconut"] },
+            { name: "Kothimbir Varan", prep: "Grind green masala", buy: ["Toor Dal", "Coriander"] },
+            { name: "Sadhi Fodni Varan", prep: "None", buy: ["Toor Dal", "Hing"] }
+        ],
+        salad: [
+            { name: "Gajar Koshimbir", prep: "Grate carrot", buy: ["Carrot"] },
+            { name: "Kakdi Koshimbir", prep: "Chop fine", buy: ["Cucumber", "Curd"] },
+            { name: "Kanda Tomato", prep: "Chop fine", buy: ["Onion", "Tomato"] },
+            { name: "Beet Koshimbir", prep: "Grate beet", buy: ["Beetroot"] }
+        ],
+        roti: [{ name: "Fulka", prep: "Knead dough", buy: ["Atta"] }, { name: "Paratha", prep: "Knead dough", buy: ["Atta", "Ghee"] }],
+        rice: [{ name: "Bhaat", prep: "Wash 2x", buy: ["Rice"] }, { name: "Jeera Rice", prep: "Soak 15m", buy: ["Basmati", "Jeera"] }]
+    };
+
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    let selections = { b: {}, l: {veg:{}, dal:{}, sal:{}, rot:{}, ric:{}}, d: {veg:{}, dal:{}, sal:{}, rot:{}, ric:{}} };
+    let weekly = JSON.parse(localStorage.getItem('weeklyPlan')) || [];
+    let pantry = JSON.parse(localStorage.getItem('pantryItems')) || [];
+
+    function init() {
+        renderInterface('b-container', 'b', ['breakfast']);
+        renderInterface('l-container', 'l', ['veg', 'dal', 'salad', 'roti', 'rice']);
+        renderInterface('d-container', 'd', ['veg', 'dal', 'salad', 'roti', 'rice']);
+        renderWeekly();
+        renderInventory();
+        updatePrep();
+    }
+
+    function renderInterface(contId, mKey, types) {
+        document.getElementById(contId).innerHTML = types.map(t => `
+            <div class="meal-row">
+                <div class="row-top">
+                    <div class="meal-label">${t}:</div>
+                    <div class="meal-selection" id="disp-${mKey}-${t}">---</div>
+                    <button class="btn-sm" onclick="shuffleItem('${mKey}','${t}')">🎲</button>
+                </div>
+                <select id="sel-${mKey}-${t}" onchange="forceSelect('${mKey}','${t}')">
+                    <option value="">-- Manual Selection --</option>
+                    ${db[t].map(i => `<option value="${i.name}">${i.name}</option>`).join('')}
+                </select>
+            </div>`).join('');
+    }
+
+    function updateDisplay(mKey, t, i) {
+        if(mKey === 'b') selections.b = i; else selections[mKey][t] = i;
+        document.getElementById(`disp-${mKey}-${t}`).innerText = i.name;
+        updatePrep();
+    }
+
+    function shuffleItem(mKey, t) { updateDisplay(mKey, t, db[t][Math.floor(Math.random()*db[t].length)]); }
+    function forceSelect(mKey, t) { 
+        const v = document.getElementById(`sel-${mKey}-${t}`).value;
+        const i = db[t].find(x => x.name === v);
+        if(i) updateDisplay(mKey, t, i);
+    }
+
+    function updatePrep() {
+        let p = "";
+        if(selections.b.name) p += `• ${selections.b.name}: ${selections.b.prep}<br>`;
+        ['l','d'].forEach(m => {
+            ['veg','dal','salad','roti','rice'].forEach(t => {
+                if(selections[m][t]?.name) p += `• ${selections[m][t].name}: ${selections[m][t].prep}<br>`;
+            });
+        });
+        document.getElementById('prep-summary').innerHTML = p || "Select meals...";
+    }
+
+    function shuffleFullDay() { shuffleItem('b','breakfast'); ['l','d'].forEach(m => ['veg','dal','salad','roti','rice'].forEach(t => shuffleItem(m,t))); }
+
+    function saveToWeekly() {
+        weekly.push(JSON.parse(JSON.stringify(selections)));
+        localStorage.setItem('weeklyPlan', JSON.stringify(weekly));
+        renderWeekly();
+    }
+
+    function renderWeekly() {
+        const tbody = document.getElementById('weekly-body');
+        tbody.innerHTML = weekly.map((e, idx) => `
+            <tr>
+                <td>${days[idx % 7]}</td>
+                <td>${e.b.name}</td>
+                <td>${e.l.veg.name}, ${e.l.dal.name}</td>
+                <td>${e.d.veg.name}, ${e.d.dal.name}</td>
+            </tr>`).join('');
+        
+        let need = new Set();
+        weekly.forEach(e => {
+            e.b.buy?.forEach(i => need.add(i));
+            ['l','d'].forEach(m => ['veg','dal','salad','roti','rice'].forEach(t => e[m][t].buy?.forEach(i => need.add(i))));
+        });
+        document.getElementById('grocery-list').innerHTML = Array.from(need).map(i => `<li>☐ ${i}</li>`).join('');
+    }
+
+    function clearWeeklyOnly() {
+        if(confirm("Clear current weekly plan? (Pantry stays safe)")) {
+            weekly = [];
+            localStorage.setItem('weeklyPlan', JSON.stringify(weekly));
+            renderWeekly();
+        }
+    }
+
+    function addInventory() {
+        const v = document.getElementById('inv-input').value;
+        if(v) { pantry.push(v); localStorage.setItem('pantryItems', JSON.stringify(pantry)); renderInventory(); }
+        document.getElementById('inv-input').value = "";
+    }
+
+    function renderInventory() {
+        document.getElementById('inventory-list').innerHTML = pantry.map((i, idx) => `<li><span>✅ ${i}</span> <span class="del-btn" onclick="removeInv(${idx})">×</span></li>`).join('');
+    }
+
+    function removeInv(idx) { pantry.splice(idx, 1); localStorage.setItem('pantryItems', JSON.stringify(pantry)); renderInventory(); }
+    function resetApp() { if(confirm("Clear all data?")) { localStorage.clear(); location.reload(); } }
+
+    window.onload = init;
+</script>
+</body>
+</html>
