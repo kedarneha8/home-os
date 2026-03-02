@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Home OS | Interactive Grocery</title>
+    <title>Home OS | Complete Master</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d35400; --secondary: #27ae60; --bg: #f4f7f6; --toddler: #805ad5; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 0; line-height: 1.3; -webkit-tap-highlight-color: transparent; }
@@ -20,7 +20,7 @@
         /* UI Cards */
         .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border-top: 4px solid var(--accent); }
         h1 { text-align: center; font-size: 18px; padding: 10px; background: white; margin: 0; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
-        h2 { font-size: 15px; margin: 0 0 10px 0; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        h2 { font-size: 14px; margin: 0 0 10px 0; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .section-label { background: #34495e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-top: 12px; display: inline-block; }
         
         /* Meal Rows */
@@ -29,28 +29,31 @@
         .meal-label { font-weight: bold; width: 85px; font-size: 11px; color: #7f8c8d; text-transform: uppercase; }
         select { padding: 8px; border-radius: 8px; border: 1px solid #ccc; width: 100%; font-size: 14px; margin-top: 8px; background: #fff; }
 
-        /* Grocery Checklist */
-        .grocery-list-container { columns: 2; list-style: none; padding: 0; margin: 0; }
-        .grocery-item { padding: 10px 5px; border-bottom: 1px solid #eee; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; break-inside: avoid; }
-        .grocery-item.checked { color: #cbd5e0; text-decoration: line-through; }
-        .check-box { width: 16px; height: 16px; border: 1px solid #cbd5e0; border-radius: 4px; display: inline-block; }
-        .checked .check-box { background: var(--secondary); border-color: var(--secondary); }
-
-        /* Tables */
+        /* COMPLETE WEEKLY TABLE */
         table { width: 100%; border-collapse: collapse; font-size: 10px; background: white; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 4px; text-align: left; vertical-align: top; }
-        .thali-stack { display: flex; flex-direction: column; gap: 1px; font-size: 9px; }
+        th { background: #f8f9fa; color: var(--accent); font-size: 9px; }
+        .thali-detail { display: flex; flex-direction: column; gap: 2px; }
+        .thali-item { font-size: 9px; border-bottom: 1px solid #f0f0f0; padding-bottom: 1px; color: #444; }
+        .thali-item b { color: #000; }
+
+        /* Grocery Items */
+        .grocery-list-container { columns: 2; list-style: none; padding: 0; margin: 0; }
+        .grocery-item { padding: 8px 5px; border-bottom: 1px solid #eee; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; break-inside: avoid; }
+        .grocery-item.checked { color: #cbd5e0; text-decoration: line-through; }
+        .check-box { width: 14px; height: 14px; border: 1px solid #cbd5e0; border-radius: 3px; display: inline-block; }
+        .checked .check-box { background: var(--secondary); border-color: var(--secondary); }
 
         .btn-main { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: bold; margin-top: 10px; font-size: 15px; cursor: pointer; }
-        .btn-sm { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; }
+        .btn-sm { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
         .del-btn { color: #e53e3e; font-weight: bold; cursor: pointer; padding: 0 5px; font-size: 18px; }
 
-        @media print { .tab-bar, .btn-main, select, .row-top button, .del-btn { display: none !important; } .window { display: block !important; } }
+        @media print { .tab-bar, .btn-main, select, .row-top button { display: none !important; } .window { display: block !important; } }
     </style>
 </head>
 <body>
 
-    <h1>🏠 Home OS Pro</h1>
+    <h1>🏠 Home OS - Integrated</h1>
 
     <div id="win-home" class="window active">
         <div class="card" id="prep-card" style="border-top-color: #e53e3e;">
@@ -59,21 +62,21 @@
         </div>
 
         <div class="card">
-            <h2>🍴 Adult Meal Plan</h2>
+            <h2>🍴 Adult Meal Orchestrator</h2>
             <div id="planner-container"></div>
             <button class="btn-main" onclick="shuffleFullDay()">🔀 Shuffle Adult Day</button>
-            <button class="btn-main" style="background:#27ae60;" onclick="saveToWeekly('adult')">💾 Lock Into Weekly Plan</button>
+            <button class="btn-main" style="background:#27ae60;" onclick="saveToWeekly('adult')">💾 Lock Full Thali to Plan</button>
         </div>
 
         <div class="card" style="border-top-color: #3498db;">
-            <h2>📅 Weekly Calendar (Adult)</h2>
+            <h2>📅 Weekly Plan (Complete Thali)</h2>
             <div style="overflow-x: auto;">
                 <table id="weekly-table">
-                    <thead><tr><th>Day</th><th>B-fast</th><th>Lunch</th><th>Dinner</th></tr></thead>
+                    <thead><tr><th>Day</th><th>B-fast</th><th>Lunch (Full Detail)</th><th>Dinner (Full Detail)</th></tr></thead>
                     <tbody id="weekly-body"></tbody>
                 </table>
             </div>
-            <button class="btn-main" style="background:#7f8c8d; font-size: 11px; padding: 8px;" onclick="clearWeekly('adult')">🗑️ Clear Calendar</button>
+            <button class="btn-main" style="background:#7f8c8d; font-size: 11px; padding: 8px;" onclick="clearWeekly('adult')">🗑️ Reset Plan</button>
         </div>
     </div>
 
@@ -87,13 +90,13 @@
 
         <div class="card" style="border-top-color: #3498db;">
             <h2>📅 Toddler Weekly Calendar</h2>
-            <div style="overflow-x: auto;"><table id="toddler-weekly-table"><thead><tr><th>Day</th><th>School</th><th>Meals</th></tr></thead><tbody id="toddler-weekly-body"></tbody></table></div>
+            <div style="overflow-x: auto;"><table id="toddler-weekly-table"><thead><tr><th>Day</th><th>School</th><th>Lunch/Dinner</th></tr></thead><tbody id="toddler-weekly-body"></tbody></table></div>
         </div>
     </div>
 
     <div id="win-admin" class="window">
         <div class="card" style="border-top-color: #9f7aea;">
-            <h2>🛒 Shopping List (Tap to Cross)</h2>
+            <h2>🛒 Shopping List (Tap to Check)</h2>
             <div id="grocery-list" class="grocery-list-container"></div>
             <hr>
             <h2>🏡 Pantry Inventory</h2>
@@ -118,7 +121,7 @@
             { name: "Poha", prep: "Wash 5m", buy: ["Poha", "Peanuts", "Onion"] },
             { name: "Upma", prep: "Boil water", buy: ["Rava", "Carrot", "Peas"] },
             { name: "Sevai Upma", prep: "Chop veggies", buy: ["Sevai", "Peas"] },
-            { name: "Aloo Paratha", prep: "Boil potatoes", buy: ["Atta", "Potato"] },
+            { name: "Aloo Paratha", prep: "Boil pot. night", buy: ["Atta", "Potato"] },
             { name: "Idli/Dosa", prep: "Ferment 12h", buy: ["Idli Batter", "Coconut"] },
             { name: "Moong Chilla", prep: "Soak 8h", buy: ["Moong Dal"] },
             { name: "Batatyacha Kees", prep: "Grate night", buy: ["Potato", "Peanuts"] },
@@ -130,11 +133,11 @@
             { name: "Rajma", prep: "Soak 10h", buy: ["Rajma", "Tomato"] },
             { name: "Bhendi", prep: "Wash 2h, dry", buy: ["Bhendi"] },
             { name: "Bharli Vanga", prep: "Prep masala", buy: ["Eggplant", "Peanuts"] },
-            { name: "Lasooni Methi", prep: "Sort leaves", buy: ["Methi Bunch", "Garlic"] },
+            { name: "Lasooni Methi", prep: "Sort leaves", buy: ["Methi", "Garlic"] },
             { name: "Cabbage", prep: "Wash/cut", buy: ["Cabbage", "Peas"] },
             { name: "Cauliflower", prep: "Wash/cut", buy: ["Cauliflower", "Potato"] },
             { name: "Guvar", prep: "String/cut", buy: ["Guvar", "Peanuts"] },
-            { name: "Aloo Palak", prep: "Wash/cut", buy: ["Palak Bunch", "Potato"] },
+            { name: "Aloo Palak", prep: "Wash/cut", buy: ["Palak", "Potato"] },
             { name: "Dudhi", prep: "Wash/cut", buy: ["Dudhi", "Chana Dal"] },
             { name: "Batata Kachrya", prep: "Cut thin", buy: ["Potato"] },
             { name: "Shimla Mirchi", prep: "Wash/cut", buy: ["Capsicum", "Besan"] },
@@ -154,16 +157,16 @@
         salad: [{ name: "Gajar Koshimbir", prep: "Grate", buy: ["Carrot"] }, { name: "Kakdi Koshimbir", prep: "Chop", buy: ["Cucumber", "Curd"] }, { name: "Kanda Tomato", prep: "Chop", buy: ["Onion", "Tomato"] }, { name: "Beet Koshimbir", prep: "Grate", buy: ["Beetroot"] }],
         roti: [{ name: "Fulka", prep: "Knead", buy: ["Atta"] }, { name: "Paratha", prep: "Knead", buy: ["Atta", "Ghee"] }],
         rice: [{ name: "Bhaat", prep: "Wash", buy: ["Rice"] }, { name: "Jeera Rice", prep: "Soak", buy: ["Basmati Rice"] }],
-        snack: [{ name: "Makhana", prep: "Roast", buy: ["Makhana"] }, { name: "Goldfish", prep: "None", buy: ["Goldfish"] }, { name: "Parmesan Crisps", prep: "Bake", buy: ["Parmesan"] }, { name: "Veggie Straws", prep: "None", buy: ["Veggie Straws"] }, { name: "Pizza Balls", prep: "Bake", buy: ["Pizza Dough"] }],
+        snack: [{ name: "Makhana", prep: "Roast", buy: ["Makhana"] }, { name: "Goldfish", prep: "None", buy: ["Goldfish"] }, { name: "Parmesan Crisps", prep: "Bake", buy: ["Parmesan"] }, { name: "Veggie Straws", prep: "None", buy: ["Veggie Straws"] }, { name: "Pizza Balls", prep: "Bake", buy: ["Dough"] }],
         tiffin: [{ name: "Aloo Paratha", prep: "Stuff", buy: ["Potato", "Atta"] }, { name: "Paneer Paratha", prep: "Stuff", buy: ["Paneer", "Atta"] }, { name: "Puri", prep: "Fry", buy: ["Atta", "Oil"] }, { name: "Methi Paratha", prep: "Knead", buy: ["Methi", "Atta"] }, { name: "Carrot Paratha", prep: "Grate", buy: ["Carrot", "Atta"] }]
     };
 
     const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    let sel = { adult: {b:{}, l_v:{}, l_d:{}, l_s:{}, l_rot:{}, l_ric:{}, d_v:{}, d_d:{}, d_s:{}, d_rot:{}, d_ric:{}}, toddler: {b:{}, snk:{}, tif:{}, l_v:{}, l_d:{}, d_v:{}, d_d:{}} };
-    let weeklyAdult = JSON.parse(localStorage.getItem('wa_pro_v2')) || [];
-    let weeklyToddler = JSON.parse(localStorage.getItem('wt_pro_v2')) || [];
+    let sel = { adult: {b:{}, l_v:{}, l_d:{}, l_s:{}, l_r:{}, l_ri:{}, d_v:{}, d_d:{}, d_s:{}, d_r:{}, d_ri:{}}, toddler: {b:{}, snk:{}, tif:{}, l_v:{}, l_d:{}, d_v:{}, d_d:{}} };
+    let weeklyAdult = JSON.parse(localStorage.getItem('wa_master')) || [];
+    let weeklyToddler = JSON.parse(localStorage.getItem('wt_master')) || [];
     let pantry = JSON.parse(localStorage.getItem('pantryItems')) || [];
-    let checkedGrocery = JSON.parse(localStorage.getItem('checkedGrocery')) || [];
+    let checkedItems = JSON.parse(localStorage.getItem('checkedGrocery')) || [];
 
     function showWindow(id, btn) {
         document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
@@ -175,16 +178,16 @@
     function init() {
         const adl = document.getElementById('planner-container');
         adl.innerHTML = `<span class="section-label">Breakfast</span>` + renderRow('adult','b','breakfast') +
-                        `<span class="section-label">Lunch</span>` + renderRow('adult','l_v','veg') + renderRow('adult','l_d','dal') + renderRow('adult','l_s','salad') + renderRow('adult','l_rot','roti') + renderRow('adult','l_ric','rice') +
-                        `<span class="section-label">Dinner</span>` + renderRow('adult','d_v','veg') + renderRow('adult','d_d','dal') + renderRow('adult','d_s','salad') + renderRow('adult','d_rot','roti') + renderRow('adult','d_ric','rice');
+                        `<span class="section-label">Lunch</span>` + renderRow('adult','l_v','veg') + renderRow('adult','l_d','dal') + renderRow('adult','l_s','salad') + renderRow('adult','l_r','roti') + renderRow('adult','l_ri','rice') +
+                        `<span class="section-label">Dinner</span>` + renderRow('adult','d_v','veg') + renderRow('adult','d_d','dal') + renderRow('adult','d_s','salad') + renderRow('adult','d_r','roti') + renderRow('adult','d_ri','rice');
         const tod = document.getElementById('toddler-planner-container');
         tod.innerHTML = `<span class="section-label t-label">Toddler Breakfast / School</span>` + renderRow('toddler','b','breakfast') + renderRow('toddler','snk','snack') + renderRow('toddler','tif','tiffin') +
-                        `<span class="section-label t-label">Toddler Main Meals</span>` + renderRow('toddler','l_v','veg') + renderRow('toddler','l_d','dal') + renderRow('toddler','d_v','veg') + renderRow('toddler','d_d','dal');
+                        `<span class="section-label t-label">Toddler Meals (Optional)</span>` + renderRow('toddler','l_v','veg') + renderRow('toddler','l_d','dal') + renderRow('toddler','d_v','veg') + renderRow('toddler','d_d','dal');
         renderWeekly('adult'); renderWeekly('toddler'); renderInventory(); updateGroceryUI();
     }
 
     function renderRow(mK, subK, dbK) {
-        return `<div class="meal-row"><div class="row-top"><div class="meal-label">${dbK}:</div><div class="meal-selection" id="disp-${mK}-${subK}">---</div><button class="btn-sm" onclick="shuffleItem('${mK}','${subK}','${dbK}')">🎲</button></div><select id="sel-${mK}-${subK}-${dbK}" onchange="forceSelect('${mK}','${subK}','${dbK}')"><option value="">-- Manual --</option>${db[dbK].map(i => `<option value="${i.name}">${i.name}</option>`).join('')}</select></div>`;
+        return `<div class="meal-row"><div class="row-top"><div class="meal-label">${dbK}:</div><div class="meal-selection" id="disp-${mK}-${subK}">---</div><button class="btn-sm" onclick="shuffleItem('${mK}','${subK}','${dbK}')">🎲</button></div><select id="sel-${mK}-${subK}-${dbK}" onchange="forceSelect('${mK}','${subK}','${dbK}')"><option value="">-- Select --</option>${db[dbK].map(i => `<option value="${i.name}">${i.name}</option>`).join('')}</select></div>`;
     }
 
     function shuffleItem(mK, subK, dbK) { updateDisplay(mK, subK, db[dbK][Math.floor(Math.random()*db[dbK].length)]); }
@@ -201,61 +204,47 @@
     }
 
     function updatePrep() {
-        let p = "<strong>Tonight's Action:</strong><br>";
+        let p = "<strong>Tonight:</strong><br>";
         if(sel.adult.b.name) p += `• Adult B-fast: ${sel.adult.b.prep}<br>`;
         if(sel.toddler.tif.name) p += `• Toddler Tiffin: ${sel.toddler.tif.prep}<br>`;
-        if(sel.toddler.snk.name) p += `• Toddler Snack: ${sel.toddler.snk.prep}<br>`;
         document.getElementById('prep-summary').innerHTML = p;
     }
 
-    function shuffleToddlerDay() { ['b','snk','tif','l_v','l_d','d_v','d_d'].forEach(k => shuffleItem('toddler', k, k === 'snk' ? 'snack' : k === 'tif' ? 'tiffin' : k.includes('_v') ? 'veg' : k.includes('_d') ? 'dal' : 'breakfast')); }
-    function shuffleFullDay() { ['b','l_v','l_d','l_s','l_rot','l_ric','d_v','d_d','d_s','d_rot','d_ric'].forEach(k => shuffleItem('adult', k, k.includes('_v') ? 'veg' : k.includes('_d') ? 'dal' : k.includes('_s') ? 'salad' : k.includes('_rot') ? 'roti' : k.includes('_ric') ? 'rice' : 'breakfast')); }
-
     function saveToWeekly(mK) {
-        if(mK === 'adult') { weeklyAdult.push(JSON.parse(JSON.stringify(sel.adult))); localStorage.setItem('wa_pro_v2', JSON.stringify(weeklyAdult)); }
-        else { weeklyToddler.push(JSON.parse(JSON.stringify(sel.toddler))); localStorage.setItem('wt_pro_v2', JSON.stringify(weeklyToddler)); }
-        renderWeekly(mK);
-        updateGroceryUI();
+        if(mK === 'adult') { weeklyAdult.push(JSON.parse(JSON.stringify(sel.adult))); localStorage.setItem('wa_master', JSON.stringify(weeklyAdult)); }
+        else { weeklyToddler.push(JSON.parse(JSON.stringify(sel.toddler))); localStorage.setItem('wt_master', JSON.stringify(weeklyToddler)); }
+        renderWeekly(mK); updateGroceryUI();
     }
 
     function renderWeekly(mK) {
         const tbody = document.getElementById(mK === 'adult' ? 'weekly-body' : 'toddler-weekly-body');
         const data = mK === 'adult' ? weeklyAdult : weeklyToddler;
         tbody.innerHTML = data.map((e, idx) => mK === 'adult' ? 
-            `<tr><td><b>${days[idx%7]}</b></td><td>${e.b?.name||''}</td><td><div class="thali-stack"><span>V: <b>${e.l_v?.name||''}</b></span><span>D: <b>${e.l_d?.name||''}</b></span></div></td><td><div class="thali-stack"><span>V: <b>${e.d_v?.name||''}</b></span><span>D: <b>${e.d_d?.name||''}</b></span></div></td></tr>` :
+            `<tr><td><b>${days[idx%7]}</b></td><td>${e.b?.name||''}</td><td><div class="thali-detail"><span class="thali-item">V: <b>${e.l_v?.name||''}</b></span><span class="thali-item">D: <b>${e.l_d?.name||''}</b></span><span class="thali-item">S: ${e.l_s?.name||''}</span><span class="thali-item">R: ${e.l_r?.name||''}</span></div></td><td><div class="thali-detail"><span class="thali-item">V: <b>${e.d_v?.name||''}</b></span><span class="thali-item">D: <b>${e.d_d?.name||''}</b></span><span class="thali-item">S: ${e.d_s?.name||''}</span><span class="thali-item">R: ${e.d_r?.name||''}</span></div></td></tr>` :
             `<tr><td><b>${days[idx%7]}</b></td><td>${e.snk?.name||''}<br>${e.tif?.name||''}</td><td>${e.l_v?.name||''}<br>${e.d_v?.name||''}</td></tr>`
         ).join('');
     }
 
     function updateGroceryUI() {
         let need = new Set();
-        [...weeklyAdult, ...weeklyToddler].forEach(day => {
-            Object.values(day).forEach(meal => {
-                if(meal.buy) meal.buy.forEach(ing => need.add(ing));
-            });
-        });
-
-        const listContainer = document.getElementById('grocery-list');
-        listContainer.innerHTML = Array.from(need).map(ing => {
-            const isChecked = checkedGrocery.includes(ing) ? 'checked' : '';
-            return `<div class="grocery-item ${isChecked}" onclick="toggleCheck(this, '${ing}')"><span class="check-box"></span>${ing}</div>`;
-        }).join('');
+        [...weeklyAdult, ...weeklyToddler].forEach(day => Object.values(day).forEach(meal => meal.buy?.forEach(ing => need.add(ing))));
+        const list = document.getElementById('grocery-list');
+        list.innerHTML = Array.from(need).map(ing => `<div class="grocery-item ${checkedItems.includes(ing)?'checked':''}" onclick="toggleCheck(this, '${ing}')"><span class="check-box"></span>${ing}</div>`).join('');
     }
 
     function toggleCheck(el, ing) {
         el.classList.toggle('checked');
-        if (el.classList.contains('checked')) {
-            if (!checkedGrocery.includes(ing)) checkedGrocery.push(ing);
-        } else {
-            checkedGrocery = checkedGrocery.filter(i => i !== ing);
-        }
-        localStorage.setItem('checkedGrocery', JSON.stringify(checkedGrocery));
+        if(el.classList.contains('checked')) { if(!checkedItems.includes(ing)) checkedItems.push(ing); }
+        else { checkedItems = checkedItems.filter(i => i !== ing); }
+        localStorage.setItem('checkedGrocery', JSON.stringify(checkedItems));
     }
 
     function addInventory() { const v = document.getElementById('inv-input').value; if(v) { pantry.push(v); localStorage.setItem('pantryItems', JSON.stringify(pantry)); renderInventory(); } document.getElementById('inv-input').value = ""; }
     function renderInventory() { document.getElementById('inventory-list').innerHTML = pantry.map((i, idx) => `<li>✅ ${i} <span class="del-btn" onclick="removeInv(${idx})">×</span></li>`).join(''); }
     function removeInv(idx) { pantry.splice(idx, 1); localStorage.setItem('pantryItems', JSON.stringify(pantry)); renderInventory(); }
-    function clearWeekly(mK) { if(confirm("Clear?")) { if(mK==='adult') { weeklyAdult=[]; localStorage.setItem('wa_pro_v2', "[]"); } else { weeklyToddler=[]; localStorage.setItem('wt_pro_v2', "[]"); } checkedGrocery=[]; localStorage.setItem('checkedGrocery', "[]"); renderWeekly(mK); updateGroceryUI(); } }
+    function clearWeekly(mK) { if(confirm("Reset?")) { if(mK==='adult') { weeklyAdult=[]; localStorage.setItem('wa_master', "[]"); } else { weeklyToddler=[]; localStorage.setItem('wt_master', "[]"); } checkedItems=[]; localStorage.setItem('checkedGrocery', "[]"); renderWeekly(mK); updateGroceryUI(); } }
+    function shuffleToddlerDay() { ['b','snk','tif','l_v','l_d','d_v','d_d'].forEach(k => shuffleItem('toddler', k, k==='snk'?'snack':k==='tif'?'tiffin':k.includes('_v')?'veg':k.includes('_d')?'dal':'breakfast')); }
+    function shuffleFullDay() { ['b','l_v','l_d','l_s','l_r','l_ri','d_v','d_d','d_s','d_r','d_ri'].forEach(k => shuffleItem('adult', k, k.includes('_v')?'veg':k.includes('_d')?'dal':k.includes('_s')?'salad':k.includes('_r')?'roti':k.includes('_ri')?'rice':'breakfast')); }
 
     window.onload = init;
 </script>
